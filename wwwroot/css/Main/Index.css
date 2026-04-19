@@ -1,0 +1,57 @@
+body {
+    background: #0b1220;
+    color: white;
+    font-family: system-ui;
+}
+
+.hero {
+    padding: 100px 20px;
+    text-align: center;
+}
+
+.title {
+    font-size: 3rem;
+    font-weight: bold;
+}
+
+.subtitle {
+    color: #94a3b8;
+    margin-top: 15px;
+    font-size: 1.2rem;
+}
+
+.btn-main {
+    margin-top: 30px;
+    padding: 12px 28px;
+    border-radius: 12px;
+}
+
+.section {
+    max-width: 1100px;
+    margin: auto;
+    padding: 60px 20px;
+}
+
+.card-custom {
+    background: #111a2e;
+    border: 1px solid #1f2a44;
+    border-radius: 12px;
+    padding: 20px;
+    height: 100%;
+}
+
+.tag {
+    display: inline-block;
+    background: #1e293b;
+    padding: 3px 10px;
+    border-radius: 8px;
+    font-size: 12px;
+    margin-right: 5px;
+    margin-top: 5px;
+}
+
+footer {
+    text-align: center;
+    color: #64748b;
+    padding: 40px;
+}

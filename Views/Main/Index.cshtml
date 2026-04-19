@@ -1,0 +1,92 @@
+@{
+    ViewData["Title"] = "My Markdown Blog";
+    Layout = null;
+}
+
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>My Markdown Blog</title>
+
+    <!-- Bootstrap -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="~/css/Main/Index.css" >  @* ~ 是網站根目錄 *@
+
+</head>
+
+
+<body>
+<!-- Hero -->
+<div class="hero">
+    <div class="title">📝Markdown Blog</div>
+    <div class="subtitle">
+        用 Markdown 記錄技術、思考與專案實作，打造自己的知識庫
+    </div>
+
+    <a href="/register/registerForm" class="btn btn-primary btn-main">
+        註冊
+    </a>
+    <a href="/login" class="btn btn-primary btn-main">
+        登入
+    </a>
+</div>
+
+<!-- Feature -->
+<div class="section">
+
+    <div class="row g-4">
+
+        <div class="col-md-4">
+            <div class="card-custom">
+                <h4>✍️ Markdown 寫作</h4>
+                <p>支援 Markdown 編輯器，快速整理技術筆記與文章內容。</p>
+                <span class="tag">Markdown</span>
+                <span class="tag">Editor</span>
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            <div class="card-custom">
+                <h4>⚡ 技術分享</h4>
+                <p>分享各種知識與實作經驗，包含技術、工具應用與生活觀點。</p>
+                <span class="tag">Practice</span>
+                <span class="tag">Insight</span>
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            <div class="card-custom">
+                <h4>🚀 個人知識庫</h4>
+                <p>建立自己的第二大腦，記錄學習與專案經驗。</p>
+                <span class="tag">Knowledge</span>
+                <span class="tag">System</span>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+<!-- Latest -->
+@* <div class="section">
+
+    <h3 class="mb-4">📚 最新文章</h3>
+
+    <div class="card-custom mb-3">
+        <h5>GCN Graph Neural Network 筆記整理</h5>
+        <p style="color:#94a3b8;">整理 Graph Convolutional Network 的核心公式與推導</p>
+    </div>
+
+    <div class="card-custom mb-3">
+        <h5>ASP.NET MVC Routing 完整理解</h5>
+        <p style="color:#94a3b8;">從 URL → Controller → Action 的完整流程解析</p>
+    </div>
+
+    <div class="card-custom mb-3">
+        <h5>Markdown Blog 系統設計</h5>
+        <p style="color:#94a3b8;">如何設計一個可擴充的個人部落格系統</p>
+    </div> 
+
+</div> *@
+</body>
