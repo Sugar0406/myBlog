@@ -1,7 +1,10 @@
+@* model 必須第一行 *@
+@model User
 @{
     ViewData["Title"] = "My Markdown Blog";
     Layout = null;
 }
+
 
 <!DOCTYPE html>
 <html lang="zh-TW">
@@ -19,19 +22,38 @@
 
 <body>
 <!-- Hero -->
+@if (User.Identity?.IsAuthenticated != true)
+{
 <div class="hero">
     <div class="title">📝Markdown Blog</div>
     <div class="subtitle">
         用 Markdown 記錄技術、思考與專案實作，打造自己的知識庫
     </div>
 
-    <a href="/register/registerForm" class="btn btn-primary btn-main">
+    <a href="/Register/RegisterForm" class="btn btn-primary btn-main">
         註冊
     </a>
-    <a href="/login" class="btn btn-primary btn-main">
+    <a href="/Login/LoginForm" class="btn btn-primary btn-main">
         登入
     </a>
 </div>
+}
+
+
+
+@if (User.Identity != null && User.Identity.IsAuthenticated && Model!=null)
+{
+<div class="hero">
+    <div>
+        <div class="title">📝Markdown Blog</div>
+        <img class="avatar" src="@Model.AvatarPath"/>
+        <h3>歡迎，@User.Identity.Name</h3>
+        <a href="" class="btn btn-primary btn-main">
+            進入
+        </a>
+    </div>
+</div>
+}
 
 <!-- Feature -->
 <div class="section">

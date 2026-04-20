@@ -55,9 +55,13 @@
               "target": "Package",
               "version": "[4.1.0, )"
             },
-            "MySql.EntityFrameworkCore": {
+            "Microsoft.AspNetCore.Authentication.JwtBearer": {
               "target": "Package",
-              "version": "[10.0.1, )"
+              "version": "[10.0.6, )"
+            },
+            "Pomelo.EntityFrameworkCore.MySql": {
+              "target": "Package",
+              "version": "[9.0.0, )"
             }
           },
           "imports": [

@@ -1,6 +1,8 @@
 using Microsoft.EntityFrameworkCore;
 
-
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.IdentityModel.Tokens;
+using System.Text;
 
 // 建立「網站應用程式建構器」，並將命令列參數傳遞給它。這個建構器用於設定和建立 ASP.NET Core 網站應用程式。
 var builder = WebApplication.CreateBuilder(args);
@@ -20,8 +22,43 @@ if (string.IsNullOrEmpty(conn))
     throw new Exception("Database connection string is missing!");
 }
 builder.Services.AddDbContext<AppDbContext>(options =>
-    options.UseMySQL(conn)
+    options.UseMySql(conn, ServerVersion.AutoDetect(conn))
 );
+
+
+
+// JWT Setting
+var key = builder.Configuration["Jwt:Key"];
+if (string.IsNullOrEmpty(key))
+{
+    throw new Exception("JWT Sinature Key is missing!");
+}
+builder.Services
+.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+.AddJwtBearer(options =>
+{
+    options.TokenValidationParameters = new TokenValidationParameters
+    {
+        ValidateIssuer = true,
+        ValidateAudience = true,
+        ValidateLifetime = true,
+        ValidateIssuerSigningKey = true,
+
+        ValidIssuer = builder.Configuration["Jwt:Issuer"],
+        ValidAudience = builder.Configuration["Jwt:Audience"],
+        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(key))
+    };
+
+    // 從 Cookie 讀 JWT (後續會將登入資訊存到Cookie)
+    options.Events = new JwtBearerEvents
+    {
+        OnMessageReceived = context =>
+        {
+            context.Token = context.Request.Cookies["jwt"];
+            return Task.CompletedTask;
+        }
+    };
+});
 
 
 
@@ -45,8 +82,14 @@ app.UseHttpsRedirection();
 // 啟用 URL 路由解析
 app.UseRouting();
 
-// 檢查使用者權限(加登入系統，才有作用)
+
+// 順序不能錯
+// 檢查使用者是否登入
+app.UseAuthentication();
+// 檢查使用者權限
 app.UseAuthorization();
+
+
 
 // 啟用靜態檔案服務，允許應用程式直接提供 wwwroot 資料夾中的靜態資源（如 CSS、JavaScript、圖片等），而不需要經過 MVC 的處理。
 app.MapStaticAssets();

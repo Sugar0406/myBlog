@@ -6,9 +6,11 @@ using BCrypt.Net;
 namespace myBlog.Controllers;
 
 
+// 一定要public， ASP.NET Core MVC才會識別到並將其加到路由中
 public class RegisterController : Controller
 {
     // 宣告一個資料庫操作工具 _db，這個 Controller 專用的資料庫工具
+    // AppDbContext 定義在 AppDbContext.cs
     private readonly AppDbContext _db;
 
     // constructor
@@ -24,7 +26,8 @@ public class RegisterController : Controller
     }
 
 
-    // Task 代表非同步任務
+    // async 允許寫 await 的語法糖
+    // Task 非同步結果容器 代表這個方法會回傳一個未來的結果
     // IActionResult 回傳 HTTP結果（View / Json / Redirect）
     // 引用定義好的RegisterFormModel
     [HttpPost]
