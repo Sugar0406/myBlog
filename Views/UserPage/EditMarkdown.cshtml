@@ -1,0 +1,151 @@
+@model Post
+@{
+    ViewData["Title"] = "編輯 Markdown";
+    Layout = null;
+}
+
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="utf-8" />
+    <title>@Model.PostTitle</title>
+
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+
+    <style>
+        body {
+            margin: 0;
+            font-family: Arial;
+        }
+
+        .container {
+            display: flex;
+            height: 100vh;
+        }
+
+        textarea {
+            width: 50%;
+            padding: 15px;
+            font-size: 16px;
+            border: none;
+            outline: none;
+            resize: none;
+
+            background-color: #1e1e2f;
+            color: white;
+        }
+
+        .preview {
+            flex: 1;
+            padding: 15px;
+            border-left: 1px solid #333;
+            overflow-y: auto;
+            background-color: #1e1e2f;
+            color: white;
+        }
+
+        .resizer {
+            width: 5px;
+            cursor: col-resize;
+            background-color: #444;
+        }
+
+        .resizer:hover {
+            background-color: #666;
+        }
+
+        .topbar {
+            position: fixed;
+            top: 10px;
+            right: 20px;
+        }
+
+        button {
+            padding: 8px 16px;
+            cursor: pointer;
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="topbar">
+    <button onclick="history.back()">🔙 返回</button>
+    <button onclick="saveMarkdown()">💾 儲存</button>
+</div>
+
+<div class="container">
+    <textarea id="editor" oninput="updatePreview()">@Model.PostContent</textarea>
+    <div class="resizer" id="dragbar"></div>
+    <div class="preview" id="preview"></div>
+</div>
+
+<script>
+    function updatePreview() {
+        const text = document.getElementById("editor").value;
+
+        // markdown 解析
+        document.getElementById("preview").innerHTML = marked.parse(text);
+    }
+
+    function saveMarkdown() {
+        console.log("clicked");
+        const content = document.getElementById("editor").value;
+
+        // 自製表單
+        const formData = new FormData();
+        const postId = @Html.Raw(Json.Serialize(Model.PostId));
+        formData.append("post_id", postId);
+        formData.append("UpdateContent", content);
+
+        fetch("/UserPage/UpdateMarkdown", {
+            method: "POST",
+            body: formData
+        })
+        .then(res => {
+            if (res.ok) {
+                alert("儲存成功");
+            } else {
+                alert("儲存失敗");
+            }
+        })
+        .catch(err => {
+            alert("系統錯誤");
+        });
+
+    }
+
+    // 初始渲染
+    updatePreview();
+</script>
+
+<script>
+const dragbar = document.getElementById("dragbar");
+const editor = document.getElementById("editor");
+
+let isDragging = false;
+
+dragbar.addEventListener("mousedown", function () {
+    isDragging = true;
+});
+
+document.addEventListener("mousemove", function (e) {
+    if (!isDragging) return;
+
+    let containerWidth = document.querySelector(".container").offsetWidth;
+
+    let newWidth = (e.clientX / containerWidth) * 100;
+
+    if (newWidth < 10) newWidth = 10;
+    if (newWidth > 90) newWidth = 90;
+
+    editor.style.width = newWidth + "%";
+});
+
+document.addEventListener("mouseup", function () {
+    isDragging = false;
+});
+</script>
+
+</body>
+</html>

@@ -48,6 +48,7 @@ public class LoginController : Controller
                 {
                     HttpOnly = true,
                     Secure = true,
+                    Path = "/",
                     SameSite = SameSiteMode.Strict,
                     Expires = DateTime.UtcNow.AddHours(24)
                 });

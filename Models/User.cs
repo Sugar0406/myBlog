@@ -1,6 +1,7 @@
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
+[Table("users")]
 public class User
 {
     [Key]  //指定這是PK

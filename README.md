@@ -190,6 +190,22 @@ CREATE TABLE users (
     hash_password VARCHAR(255) NOT NULL,
     user_avatar_path VARCHAR(255) NOT NULL              
 );
+
+
+CREATE TABLE posts (
+    post_id CHAR(50) PRIMARY KEY,
+    author_id VARCHAR(50) NOT NULL,
+    title VARCHAR(255) NOT NULL,
+    preview VARCHAR(255) NOT NULL,
+    content LONGTEXT NOT NULL,
+    is_public BOOLEAN DEFAULT FALSE,
+    created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+    updated_at DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    INDEX idx_author(author_id)
+)
+CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+
+
 ```
 
 
@@ -251,7 +267,7 @@ app.UseAuthorization();
 ```
 
 4.建立JWT簽發工具
-見JWT.cs
+
 ```cs
 using System.Security.Claims;
 using Microsoft.IdentityModel.Tokens;
@@ -294,3 +310,7 @@ public class JwtService
     }
 }
 ```
+
+
+# Next TODO
+UserPage顯示自己的Markdown

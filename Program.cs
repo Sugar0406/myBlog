@@ -12,8 +12,8 @@ var builder = WebApplication.CreateBuilder(args);
 // 這裡使用 AddControllersWithViews 方法，表示同時啟用 Controller 和 View 的功能。
 builder.Services.AddControllersWithViews();
 
-
-
+// 在Program.cs註冊自訂的jwt服務套件
+builder.Services.AddScoped<JwtService>();
 
 // builder database setting 
 var conn = builder.Configuration.GetConnectionString("DefaultConnection");
@@ -33,9 +33,11 @@ if (string.IsNullOrEmpty(key))
 {
     throw new Exception("JWT Sinature Key is missing!");
 }
+
+
 builder.Services
-.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
-.AddJwtBearer(options =>
+.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)  //啟用jwt驗證
+.AddJwtBearer(options =>    //設定 JWT 驗證規則
 {
     options.TokenValidationParameters = new TokenValidationParameters
     {
@@ -49,15 +51,28 @@ builder.Services
         IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(key))
     };
 
-    // 從 Cookie 讀 JWT (後續會將登入資訊存到Cookie)
+    // 處理各種驗證事件
     options.Events = new JwtBearerEvents
     {
+        // 驗證jwt時，從 Cookie 讀 JWT (當系統要找JWT時，改成從Cookie拿，而不是Header)
         OnMessageReceived = context =>
         {
             context.Token = context.Request.Cookies["jwt"];
             return Task.CompletedTask;
+        },
+
+        // 系統要回應401(未授權)時觸發 跳轉到主頁
+        // OnChallenge 是全域的 任何的401都會被處理
+        OnChallenge = context =>
+        {
+            context.HandleResponse();
+            context.Response.Redirect("/Main/Index");
+            return Task.CompletedTask;
         }
+
     };
+
+
 });
 
 

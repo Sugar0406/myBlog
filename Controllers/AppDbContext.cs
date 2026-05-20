@@ -13,4 +13,5 @@ public class AppDbContext : DbContext
 
     // 宣告users這張資料表的查詢+操作管道， 這個DbSet對應了User這個Model
     public DbSet<User> users { get; set; }
+    public DbSet<Post> posts { get; set; }
 }
