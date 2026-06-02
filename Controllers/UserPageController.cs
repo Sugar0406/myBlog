@@ -17,6 +17,7 @@ public class UserPageController : Controller
     [Authorize]
     public IActionResult UserPage()
     {
+        // 取得該User帳號資訊
         var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
 
         if (!Guid.TryParse(userId, out var guid))
@@ -25,7 +26,25 @@ public class UserPageController : Controller
         }
 
         var user = _db.users.FirstOrDefault(x => x.UserId == guid);
-        return View(user);
+
+        if (user == null)
+        {
+            return NotFound();
+        }
+
+
+        // 取得該User為作者的Markdown
+        var posts = _db.posts
+            .Where(x => x.AuthorId == guid)
+            .ToList();
+
+        var UserViewModel = new UserPageViewModel
+        {
+            User = user,
+            Posts = posts
+        };
+
+        return View(UserViewModel);
     }
 
     [Authorize]
@@ -39,6 +58,31 @@ public class UserPageController : Controller
 
         return View(post);
     }
+
+
+    [Authorize]
+    [HttpPost]
+    public IActionResult DeletePost(Guid postid)
+    {
+
+        var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+
+        if (!Guid.TryParse(userId, out var guid))
+            return RedirectToAction("Main", "Index");
+
+        var post = _db.posts.FirstOrDefault(x =>
+            x.PostId == postid &&
+            x.AuthorId == guid);
+
+        if (post == null)
+            return NotFound();
+
+        _db.posts.Remove(post);
+        _db.SaveChanges();
+
+        return RedirectToAction("UserPage");
+    }
+
 
     [Authorize]
     [HttpPost]
