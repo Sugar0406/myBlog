@@ -72,7 +72,90 @@
 <div class="topbar">
     <button onclick="history.back()">🔙 返回</button>
     <button onclick="saveMarkdown()">💾 儲存</button>
+    <button type="button" onclick="document.getElementById('imageUpload').click()">
+        🖼️ 上傳圖片
+    </button>
+
+<input
+    type="file"
+    id="imageUpload"
+    accept="image/*"
+    style="display:none"
+    onchange="uploadImage(this)">
 </div>
+
+<script>
+async function uploadImage(input) {
+
+    if (!input.files.length) return;
+
+    const allowedExtensions = ["jpg","jpeg","png","gif","webp"];
+    const image = input.files[0];
+    const imageExtension = image.name.split(".").pop().toLowerCase();
+    const post_id = "@Model.PostId";
+
+    if(!allowedExtensions.includes(imageExtension)){
+        alert("不支援的圖片格式");
+        return;
+    }
+
+    const formData = new FormData();
+    formData.append("post_id", post_id);
+    formData.append("image", image);
+    
+    const response = await fetch("/UserPage/UploadImage", {
+        method: "POST",
+        body: formData
+    })
+
+    if (!response.ok) {
+        const errText = await response.text();
+        alert("上傳失敗：" + errText);
+        return;
+    } 
+
+
+    const result = await response.json();
+
+    const markdown = `![圖片](${result.url})`;
+
+    const editor = document.getElementById("editor");
+
+    if (editor) {
+        editor.value += "\n" + markdown + "\n";
+    }
+
+    input.value = "";
+
+    const text = document.getElementById("editor").value;
+    document.getElementById("preview").innerHTML = marked.parse(text);
+
+
+    // save
+    const content = document.getElementById("editor").value;
+    const saveformData = new FormData();
+    const postId = @Html.Raw(Json.Serialize(Model.PostId));
+    saveformData.append("post_id", postId);
+    saveformData.append("UpdateContent", content);
+
+    fetch("/UserPage/UpdateMarkdown", {
+        method: "POST",
+        body: saveformData
+    }).then(res => {
+        if (res.ok) {
+
+        } else {
+
+        }
+    })
+    .catch(err => {
+
+    });
+
+}
+</script>
+
+
 
 <div class="container">
     <textarea id="editor" oninput="updatePreview()">@Model.PostContent</textarea>
@@ -89,7 +172,6 @@
     }
 
     function saveMarkdown() {
-        console.log("clicked");
         const content = document.getElementById("editor").value;
 
         // 自製表單

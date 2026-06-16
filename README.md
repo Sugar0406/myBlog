@@ -312,5 +312,42 @@ public class JwtService
 ```
 
 
+# IWebHostEnvironment
+
+``` c#
+using Microsoft.AspNetCore.Hosting;
+
+private readonly AppDbContext _db;
+private readonly IWebHostEnvironment _webHostEnvironment;   
+
+
+// IWebHostEnvironment 是由 ASP.NET Core 內建的 Dependency Injection (DI) 容器自動注入
+// 當 ASP.NET Core 啟動時，框架會建立一個實作了 IWebHostEnvironment 介面的物件（實際型別通常是 WebHostEnvironment），並註冊到 DI 容器中。
+public UserPageController(AppDbContext db, IWebHostEnvironment webHostEnvironment)
+{
+    _db = db;
+    _webHostEnvironment = webHostEnvironment;
+
+    Console.WriteLine(_webHostEnvironment.WebRootPath);                   // 取得 wwwroot 的實體路徑。
+    Console.WriteLine(_webHostEnvironment.ContentRootPath);               // 取得專案根目錄。
+    Console.WriteLine(_webHostEnvironment.EnvironmentName);               // 取得目前執行環境。 (Development -> 開發環境 , Staging -> 測試/預備上線環境, Production -> 正式上線環境)
+    Console.WriteLine(_webHostEnvironment.IsDevelopment());
+    Console.WriteLine(_webHostEnvironment.IsProduction());
+    Console.WriteLine(_webHostEnvironment.WebRootFileProvider);
+    Console.WriteLine(_webHostEnvironment.ContentRootFileProvider);
+}
+
+
+// output如下
+// D:\myBlog\wwwroot
+// D:\myBlog
+// Development
+// True
+// False
+// Microsoft.Extensions.FileProviders.CompositeFileProvider
+// Microsoft.Extensions.FileProviders.PhysicalFileProvider
+```
+
 # Next TODO
-在Markdown 上傳圖片
+<!-- 在Markdown 上傳圖片 -->
+處理公開貼文
